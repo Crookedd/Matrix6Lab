@@ -387,19 +387,6 @@ namespace Matrix6Lab
         {
             convertDelegate(this);
         }
-        private void ConvertToDiagonal()
-        {
-            Action<MatrixInf> convertDelegate = delegate (MatrixInf A) {
-                for (int i = 0; i < A.Size; i++)
-                {
-                    for (int j = 0; j < A.Size; j++)
-                    {
-                        if (i != j)
-                            A[i, j] = 0;
-                    }
-                }
-            };
-        }
         //Вывод Матрицы
         public override string ToString()
         {
