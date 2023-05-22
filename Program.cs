@@ -22,7 +22,7 @@ namespace Matrix6Lab
 
             Console.WriteLine("\nВыберите какую операцию хотите совершить над Матрицей(ами): ");
             Console.WriteLine("1. Сложение\n2. Вычитание\n3. Умножение\n4. Деление\n5. Проверить на равность\n6. Сравнение >\n7. Сравнение <\n8. Сравнение >=\n" +
-                "6=9. Сравнение <=\n10. Найти Определитель\n11. Обратная матрица\n");
+                "9. Сравнение <=\n10. Найти Определитель\n11. Обратная матрица\n12. Транспортирование матрицы\n13. Сумма элементов диагонали Матрицы");
             string choice = Console.ReadLine();
             switch (choice)
             {
@@ -59,6 +59,27 @@ namespace Matrix6Lab
                 case "11":
                     var inverseA = MatrixA.Inverse(MatrixA);
                     Console.WriteLine($"Инверсия Матрицы:\n{inverseA}");
+                    break;
+                case "12":
+                    Console.WriteLine($"Транспортирование Матрицы: {MatrixA.MatrixTransposition(MatrixA)}");
+                    break;
+                case "13":
+                    Console.WriteLine($"Сумма диагоналей Матрицы: {MatrixA.MatrixTrace(MatrixA)}");
+                    break;
+                case "14":
+                        Action<MatrixInf> convertDelegate = delegate (MatrixInf A) {
+                            for (int i = 0; i < A.SizeN; i++)
+                            {
+                                for (int j = 0; j < A.SizeN; j++)
+                                {
+                                    if (i != j)
+                                        A[i, j] = 0;
+                                }
+                            }
+                        };
+                        MatrixA.ConvertToDiagonal(convertDelegate);
+                    Console.WriteLine(MatrixA.ToString());
+                    Console.WriteLine("Матрица приведена к диагональному виду.\n");
                     break;
                 default:
                     Console.WriteLine("Нету такого выбора!");

@@ -354,6 +354,52 @@ namespace Matrix6Lab
 
             return Result;
         }
+        //Транспортация 
+        public MatrixInf MatrixTransposition(MatrixInf A)
+        {
+            var Result = new MatrixInf(A.SizeN);
+            for (int IndexColumn = 0; IndexColumn < A.Size; IndexColumn++)
+            {
+                for (int IndexRow = 0; IndexRow < A.Size; IndexRow++)
+                {
+                    Result[IndexColumn, IndexRow] = A[IndexRow, IndexColumn];
+                }
+            }
+            return Result;
+        }
+        public double MatrixTrace(MatrixInf A)
+        {
+            double Result = 0;
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
+            {
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
+                {
+                    if (IndexColumn == IndexRow)
+                    {
+                        Result += A[IndexColumn, IndexRow];
+                    }
+                }
+            }
+            return Result;
+        }
+        // Метод для приведения матрицы к диагональному виду с использованием делегата
+        public void ConvertToDiagonal(Action<MatrixInf> convertDelegate)
+        {
+            convertDelegate(this);
+        }
+        private void ConvertToDiagonal()
+        {
+            Action<MatrixInf> convertDelegate = delegate (MatrixInf A) {
+                for (int i = 0; i < A.Size; i++)
+                {
+                    for (int j = 0; j < A.Size; j++)
+                    {
+                        if (i != j)
+                            A[i, j] = 0;
+                    }
+                }
+            };
+        }
         //Вывод Матрицы
         public override string ToString()
         {
