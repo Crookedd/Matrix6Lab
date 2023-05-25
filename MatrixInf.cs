@@ -2,52 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Matrix6Lab
 {
-    class MatrixInf
+   public  class MatrixInf
     {
-        private int Size;
-        private double[,] arry;
-
-        public MatrixInf() { }
-        public int SizeN
-        {
-            get { return Size; }
-            set { if (value < 0) Size = value; }
-
-        }
-        public MatrixInf(int Size)
-        {
-            this.Size = Size;
-            arry = new double[this.Size, this.Size];
-        }
-        public double this[int ColumnCount, int RowCount]
-        {
-            get
-            {
-                return arry[ColumnCount, RowCount];
-            }
-            set
-            {
-                arry[ColumnCount, RowCount] = value;
-            }
-        }
-
-        public void Generate()
-        {
-            arry = new double[Size, Size];
-            var RandomNumber = new Random((int)Stopwatch.GetTimestamp());
-            for (int IndexColumn = 0; IndexColumn < Size; ++IndexColumn)
-            {
-                for (int IndexRow = 0; IndexRow < Size; ++IndexRow)
-                {
-                    arry[IndexColumn, IndexRow] = RandomNumber.Next(10, 100);
-                }
-            }
-        }
+        public int SizeN;
+        public double[,] arry = new double[10,10];
         public MatrixInf DeepCopy()
         {
             MatrixInf clone = (MatrixInf)this.MemberwiseClone();
@@ -59,12 +23,12 @@ namespace Matrix6Lab
             if (other is null)
                 return 1;
 
-            if (Size != other.Size)
-                return Size.CompareTo(other.Size);
+            if (SizeN != other.SizeN)
+                return SizeN.CompareTo(other.SizeN);
 
-            for (int IndexColumn = 0; IndexColumn < Size; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Size; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < SizeN; ++IndexRow)
                 {
                     int compare = arry[IndexColumn, IndexRow].CompareTo(other.arry[IndexColumn, IndexRow]);
                     if (compare != 0)
@@ -86,9 +50,9 @@ namespace Matrix6Lab
             unchecked
             {
                 int hashCode = 20;
-                for (int ColumnCounter = 0; ColumnCounter < Size; ColumnCounter++)
+                for (int ColumnCounter = 0; ColumnCounter < SizeN; ColumnCounter++)
                 {
-                    for (int RowCounter = 0; RowCounter < Size; RowCounter++)
+                    for (int RowCounter = 0; RowCounter < SizeN; RowCounter++)
                     {
                         hashCode = hashCode * 23 + arry[ColumnCounter, RowCounter].GetHashCode();
                     }
@@ -99,64 +63,60 @@ namespace Matrix6Lab
         //Сложение
         public static MatrixInf operator +(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    Result[IndexColumn, IndexRow] = A[IndexColumn, IndexRow] + B[IndexColumn, IndexRow];
+                    A.arry[IndexColumn, IndexRow] = A.arry[IndexColumn, IndexRow] + B.arry[IndexColumn, IndexRow];
                 }
             }
-            return Result;
+            return A;
         }
         //Вычитание
         public static MatrixInf operator -(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    Result[IndexColumn, IndexRow] = A[IndexColumn, IndexRow] - B[IndexColumn, IndexRow];
+                    A.arry[IndexColumn, IndexRow] = A.arry[IndexColumn, IndexRow] - B.arry[IndexColumn, IndexRow];
                 }
             }
-            return Result;
+            return A;
         }
         //Умножение 
         public static MatrixInf operator *(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
                 for (int K = 0; K < A.SizeN; ++K)
                 {
-                    for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                    for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                     {
-                        Result[IndexColumn, K] += A[IndexRow, K] * B[IndexColumn, IndexRow];
+                        A.arry[IndexColumn, K] += A.arry[IndexRow, K] * B.arry[IndexColumn, IndexRow];
                     }
                 }
             }
-            return Result;
+            return A;
         }
         //Деление
         public static MatrixInf operator /(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.Size; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
                     try
                     {
-                        Result[IndexColumn, IndexRow] = A[IndexColumn, IndexRow] / B[IndexColumn, IndexRow];
+                        A.arry[IndexColumn, IndexRow] = A.arry[IndexColumn, IndexRow] / B.arry[IndexColumn, IndexRow];
                     }
                     catch
                     {
-                        Result[IndexColumn, IndexRow] = 0;
+                        A.arry[IndexColumn, IndexRow] = 0;
                     }
                 }
             }
-            return Result;
+            return A;
         }
         //Операторы сравнения
         public static bool operator ==(MatrixInf A, MatrixInf B)
@@ -169,7 +129,7 @@ namespace Matrix6Lab
             {
                 for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    if (A[IndexColumn, IndexRow] == B[IndexColumn, IndexRow])
+                    if (A.arry[IndexColumn, IndexRow] == B.arry[IndexColumn, IndexRow])
                     {
                         return true;
                     }
@@ -188,7 +148,7 @@ namespace Matrix6Lab
             {
                 for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    if (A[IndexColumn, IndexRow] != B[IndexColumn, IndexRow])
+                    if (A.arry[IndexColumn, IndexRow] != B.arry[IndexColumn, IndexRow])
                     {
                         return true;
                     }
@@ -198,96 +158,92 @@ namespace Matrix6Lab
         }
         public static MatrixInf operator >(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
-                {
-                    if (A[IndexColumn, IndexRow] > B[IndexColumn, IndexRow])
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
+                {   
+                    if (A.arry[IndexColumn, IndexRow] > B.arry[IndexColumn, IndexRow])
                     {
-                        Result[IndexColumn, IndexRow] = 1;
+                        A.arry[IndexColumn, IndexRow] = 1;
                     }
                     else
                     {
-                        Result[IndexColumn, IndexRow] = 0;
+                        A.arry[IndexColumn, IndexRow] = 0;
                     }
                 }
             }
-            return Result;
+            return A;
         }
         public static MatrixInf operator <(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    if (A[IndexColumn, IndexRow] < B[IndexColumn, IndexRow])
+                    if (A.arry[IndexColumn, IndexRow] < B.arry[IndexColumn, IndexRow])
                     {
-                        Result[IndexColumn, IndexRow] = 1;
+                        A.arry[IndexColumn, IndexRow] = 1;
                     }
                     else
                     {
-                        Result[IndexColumn, IndexRow] = 0;
+                        A.arry[IndexColumn, IndexRow] = 0;
                     }
                 }
             }
-            return Result;
+            return A;
         }
 
         public static MatrixInf operator >=(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    if (A[IndexColumn, IndexRow] >= B[IndexColumn, IndexRow])
+                    if (A.arry[IndexColumn, IndexRow] >= B.arry[IndexColumn, IndexRow])
                     {
-                        Result[IndexColumn, IndexRow] = 1;
+                        A.arry[IndexColumn, IndexRow] = 1;
                     }
                     else
                     {
-                        Result[IndexColumn, IndexRow] = 0;
+                        A.arry[IndexColumn, IndexRow] = 0;
                     }
                 }
             }
-            return Result;
+            return A;
 
         }
         public static MatrixInf operator <=(MatrixInf A, MatrixInf B)
         {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
-                    if (A[IndexColumn, IndexRow] <= B[IndexColumn, IndexRow])
+                    if (A.arry[IndexColumn, IndexRow] <= B.arry[IndexColumn, IndexRow])
                     {
-                        Result[IndexColumn, IndexRow] = 1;
+                        A.arry[IndexColumn, IndexRow] = 1;
                     }
                     else
                     {
-                        Result[IndexColumn, IndexRow] = 0;
+                        A.arry[IndexColumn, IndexRow] = 0;
                     }
                 }
             }
-            return Result;
+            return A;
         }
         //Поиск Минора и по нему находим определитель. 
         public static MatrixInf Minor(MatrixInf A, int Column, int Row)
         {
-            MatrixInf buf = new MatrixInf(A.SizeN - 1);
+            MatrixInf buf = new MatrixInf();
             for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
             {
                 for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
                 {
                     if ((IndexRow != Row) || (IndexColumn != Column))
                     {
-                        if (IndexColumn > Column && IndexRow < Row) buf[IndexColumn - 1, IndexRow] = A[IndexColumn, IndexRow];
-                        if (IndexColumn < Column && IndexRow > Row) buf[IndexColumn, IndexRow - 1] = A[IndexColumn, IndexRow];
-                        if (IndexColumn > Column && IndexRow > Row) buf[IndexColumn - 1, IndexRow - 1] = A[IndexColumn, IndexRow];
-                        if (IndexColumn < Column && IndexRow < Row) buf[IndexColumn, IndexRow] = A[IndexColumn, IndexRow];
+                        if (IndexColumn > Column && IndexRow < Row) buf.arry[IndexColumn - 1, IndexRow] = A.arry[IndexColumn, IndexRow];
+                        if (IndexColumn < Column && IndexRow > Row) buf.arry[IndexColumn, IndexRow - 1] = A.arry[IndexColumn, IndexRow];
+                        if (IndexColumn > Column && IndexRow > Row) buf.arry[IndexColumn - 1, IndexRow - 1] = A.arry[IndexColumn, IndexRow];
+                        if (IndexColumn < Column && IndexRow < Row) buf.arry[IndexColumn, IndexRow] = A.arry[IndexColumn, IndexRow];
                     }
                 }
             }
@@ -297,13 +253,13 @@ namespace Matrix6Lab
         {
             double det = 0;
             int Rank = A.SizeN;
-            if (Rank == 1) det = A[0, 0];
-            if (Rank == 2) det = A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0];
+            if (Rank == 1) det = A.arry[0, 0];
+            if (Rank == 2) det = A.arry[0, 0] * A.arry[1, 1] - A.arry[0, 1] * A.arry[1, 0];
             if (Rank > 2)
             {
                 for (int Index = 0; Index < A.SizeN; ++Index)
                 {
-                    det += Math.Pow(-1, 0 + Index) * A[0, Index] * Determ(Minor(A, 0, Index));
+                    det += Math.Pow(-1, 0 + Index) * A.arry[0, Index] * Determ(Minor(A, 0, Index));
                 }
             }
             return det;
@@ -311,20 +267,20 @@ namespace Matrix6Lab
 
         private MatrixInf SubMatrix(int Row, int Column)
         {
-            var subMatrix = new MatrixInf(Size - 1);
+            MatrixInf subMatrix = new MatrixInf();
 
             int subRow = 0;
-            for (int IndexRow = 0; IndexRow < Size; ++IndexRow)
+            for (int IndexRow = 0; IndexRow < SizeN; ++IndexRow)
             {
                 if (IndexRow == Row)
                     continue;
                 int subColumn = 0;
-                for (int IndexColumn = 0; IndexColumn < Size; ++IndexColumn)
+                for (int IndexColumn = 0; IndexColumn < SizeN; ++IndexColumn)
                 {
                     if (IndexColumn == Column)
                         continue;
 
-                    subMatrix[subColumn, subColumn] = arry[IndexColumn, IndexColumn];
+                    subMatrix.arry[subColumn, subColumn] = arry[IndexColumn, IndexColumn];
                     ++subColumn;
                 }
                 ++subRow;
@@ -339,50 +295,24 @@ namespace Matrix6Lab
             {
                 throw new InvalidOperationException("Матрица не может инверст.");
             }
-            var Result = new MatrixInf(A.SizeN);
+            MatrixInf Result = new MatrixInf();
 
             int sign = 1;
-            for (int IndexColumn = 0; IndexColumn < Result.SizeN; IndexColumn++)
+            for (int IndexColumn = 0; IndexColumn < A.SizeN; IndexColumn++)
             {
-                for (int IndexRow = 0; IndexRow < Result.SizeN; IndexRow++)
+                for (int IndexRow = 0; IndexRow < A.SizeN; IndexRow++)
                 {
-                    var subMatrix = SubMatrix(IndexColumn, IndexRow);
-                    Result[IndexRow, IndexColumn] = sign * subMatrix.Determ(A) / determinant;
+                    MatrixInf subMatrix = SubMatrix(IndexColumn, IndexRow);
+                    Result.arry[IndexRow, IndexColumn] = sign * subMatrix.Determ(A) / determinant;
                     sign = -sign;
                 }
             }
 
             return Result;
+
         }
-        //Транспортация 
-        public MatrixInf MatrixTransposition(MatrixInf A)
-        {
-            var Result = new MatrixInf(A.SizeN);
-            for (int IndexColumn = 0; IndexColumn < A.Size; IndexColumn++)
-            {
-                for (int IndexRow = 0; IndexRow < A.Size; IndexRow++)
-                {
-                    Result[IndexColumn, IndexRow] = A[IndexRow, IndexColumn];
-                }
-            }
-            return Result;
-        }
-        public double MatrixTrace(MatrixInf A)
-        {
-            double Result = 0;
-            for (int IndexColumn = 0; IndexColumn < A.SizeN; ++IndexColumn)
-            {
-                for (int IndexRow = 0; IndexRow < A.SizeN; ++IndexRow)
-                {
-                    if (IndexColumn == IndexRow)
-                    {
-                        Result += A[IndexColumn, IndexRow];
-                    }
-                }
-            }
-            return Result;
-        }
-        // Метод для приведения матрицы к диагональному виду с использованием делегата
+
+        //Метод для приведения матрицы к диагональному виду с использованием делегата
         public void ConvertToDiagonal(Action<MatrixInf> convertDelegate)
         {
             convertDelegate(this);
@@ -390,11 +320,11 @@ namespace Matrix6Lab
         //Вывод Матрицы
         public override string ToString()
         {
-            string Result = $"Размеры: {Size} x {Size}\n";
+            string Result = $"Размеры: {SizeN} x {SizeN}\n";
             Result += "\n-------- Матрица ---------------\n";
-            for (int IndexColumn = 0; IndexColumn < Size; ++IndexColumn)
+            for (int IndexColumn = 0; IndexColumn < SizeN; ++IndexColumn)
             {
-                for (int IndexRow = 0; IndexRow < Size; ++IndexRow)
+                for (int IndexRow = 0; IndexRow < SizeN; ++IndexRow)
                 {
                     Result += arry[IndexColumn, IndexRow].ToString() + "\t";
                 }
