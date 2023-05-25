@@ -10,6 +10,9 @@ namespace Matrix6Lab
     {
         static void Main(string[] args)
         {
+            MatrixCalculator calculator = new MatrixCalculator();
+            calculator.Start();
+            Console.ReadKey();
         }
     }
 }
